@@ -12,7 +12,7 @@
       "value": "Pelican_VNet"
     },
     "virtualNetworkAddressPrefix":{
-      "value": "172.26.10.0/24"
+      "value": "172.x.x.x/24"
     },
     "VnetResourceGroup": {
       "value": "demoRG"
@@ -21,7 +21,7 @@
       "value": "Pelican_subnet1"
     },
     "subnetAddressPrefix":{
-      "value": "172.26.10.0/25"
+      "value": "172.x.x.x/25"
     }
   }
 }

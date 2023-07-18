@@ -14,8 +14,9 @@ data:
             <host>{{ .Release.Name }}-db-service</host>
             <port>3306</port>
             <user-name>pelicanuser</user-name>
-            <password>{{ .Values.pelicandb.password }}</password>
+            <password>{{ .Values.pelicandb.password.enc_passwd }}</password>
             <database-name>pelicandbUAT</database-name>
+            <additional-property>autoReconnect=true&amp;useSSL=NO</additional-property>
         </database-configuration>
         <web-server-configuration>
             <deployment-root-path>/usr/local/tomcat/webapps</deployment-root-path>

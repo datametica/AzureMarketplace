@@ -7,7 +7,6 @@ metadata:
     app.kubernetes.io/component: pelican-web
 data:
   init-db.sql: |
-    CREATE USER 'pelicanuser'@'%' IDENTIFIED BY '{{ .Values.pelicandb.password }}';
     GRANT ALL PRIVILEGES ON *.* TO 'pelicanuser'@'%';
     FLUSH PRIVILEGES;
- 
+

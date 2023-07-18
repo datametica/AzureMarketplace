@@ -21,24 +21,27 @@ spec:
       containers:
       - name: pelican-db
         image: "{{ .Values.pelicandb.image.repo }}:{{ .Values.pelicandb.image.tag }}"
-#        resources:
-#          requests:
-#            memory: "4Gi"
-#            cpu: "250m"
-#          limits:
-#            memory: "6Gi"
-#            cpu: "500m"
         imagePullPolicy: Always
         env:
-          - name: MYSQL_ROOT_PASSWORD
-            value: SecuredPass@321
+           - name: MARIADB_ROOT_PASSWORD
+             valueFrom:
+               secretKeyRef:
+                 key: MARIADB_ROOT_PASSWD
+                 name: {{ .Release.Name }}-secret
+           - name: MARIADB_USER
+             value: pelicanuser
+           - name: MARIADB_PASSWORD
+             valueFrom:
+               secretKeyRef:
+                  name: {{ .Release.Name }}-secret
+                  key: MARIADB_PELICAN_PASSWD   
         args:
           - "--ignore-db-dir=lost+found"
         ports:
-        - name: mysql
+        - name: mariadb
           containerPort: {{ .Values.pelicandb.port }}
         volumeMounts:
-        - name: mysql-data
+        - name: mariadb-data
           mountPath: /var/lib/mysql
         - name: init-db
           mountPath: /docker-entrypoint-initdb.d/init-db.sql
@@ -74,13 +77,17 @@ spec:
       - name: init-db
         configMap:
           name: {{ .Release.Name }}-init-db
-          defaultMode: 420
+          defaultMode: 420  
   volumeClaimTemplates:
-    - metadata:
-        name: mysql-data
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 60Gi
-
+  - metadata:
+      name: mariadb-data
+      labels:
+        app.kubernetes.io/name: {{ .Release.Name }}
+        app.kubernetes.io/component: pelican-db
+    spec:
+      resources:
+        requests:
+          storage: {{ .Values.pelicandb.persistence.size }}
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: {{ .Values.pelican.persistence.storageClass }}

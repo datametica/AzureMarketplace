@@ -12,17 +12,27 @@ pelican:
     targetPort: 8080
     # Kubernetes allows traffic from ip's defined in loadBalancerSourceRanges
     loadBalancerSourceRanges: ""
+  persistence:	
+    storageClass: ""	
+    size: "20Gi"	
+  addonfiles:	
+    persistence:	
+      storageClass: ""	
+      size: "5Gi"	
 pelicandb:
   replicas: 1
   image:
-    repo: ""
-    tag: "1.0.1"
+    repo: "mariadb"
+    tag: "10.10.2"
   port: 3306
   service:
     annotations: {}
     type: ClusterIP
     targetPort: 3306
-  password:
+  password: 
+    enc_passwd: AAAAEP8j9v6TWlUh4wMl0bhW4OntwJ9Km1JWbsN7Cp2FAKwr	
+    root_passwd: Um9vdEAzMjEj	
+    pelican_passwd: cGVsaWNhbnVzZXJAMTIz
   livenessProbe:
     initialDelaySeconds: 90
     periodSeconds: 10
@@ -39,3 +49,6 @@ pelicandb:
     enabled: false
     runAsUser: 999
     fsGroup: 999
+  persistence:	
+    size: 20Gi	
+    storageClass: ""
